@@ -1,71 +1,53 @@
 // PURPOSE: The reusable UI component for the login form.
 // ===================================================================================
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const LoginForm = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setMessage('');
     setLoading(true);
-    try {
-      await onLogin(username, password);
-      // Success is handled by the parent page (redirect)
-    } catch (error) {
-      setMessage(error.message);
-    } finally {
-      setLoading(false);
-    }
+    await onLogin(username, password);
+    setLoading(false);
   };
 
   return (
-    <div>
-      <h2 className="text-2xl font-bold text-center text-gray-700 mb-6">Welcome Back</h2>
+    <Card className="w-full max-w-sm">
+      <CardHeader>
+        <CardTitle className="text-2xl">Login</CardTitle>
+        <CardDescription>Enter your username below to login to your account.</CardDescription>
+      </CardHeader>
       <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <label className="block text-gray-600 text-sm font-semibold mb-2" htmlFor="username">
-            Username
-          </label>
-          <input
-            id="username"
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            className="w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <label className="block text-gray-600 text-sm font-semibold mb-2" htmlFor="password">
-            Password
-          </label>
-          <input
-            id="password"
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition"
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <button
-            type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg focus:outline-none focus:shadow-outline transition-transform transform hover:scale-105 disabled:bg-blue-300"
-            disabled={loading}
-          >
-            {loading ? 'Signing In...' : 'Sign In'}
-          </button>
-        </div>
-        {message && (
-          <p className="text-center text-red-500 text-sm">{message}</p>
-        )}
+        <CardContent className="grid gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="username">Username</Label>
+            <Input id="username" type="text" placeholder="johndoe" required value={username} onChange={(e) => setUsername(e.target.value)} />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="password">Password</Label>
+            <Input id="password" type="password" required value={password} onChange={(e) => setPassword(e.target.value)} />
+          </div>
+        </CardContent>
+        <CardFooter className="flex flex-col">
+          <Button className="w-full" type="submit" disabled={loading}>
+            {loading ? "Signing In..." : "Sign In"}
+          </Button>
+          <p className="mt-4 text-center text-sm text-muted-foreground">
+            Don't have an account?{" "}
+            <button type="button" onClick={() => navigate('/register')} className="underline font-semibold">Sign up</button>
+          </p>
+        </CardFooter>
       </form>
-    </div>
+    </Card>
   );
 };
 

@@ -1,7 +1,7 @@
 // PURPOSE: Global state management for authentication using React Context.
 // ===================================================================================
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import AuthService from '../services/auth.service';
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import AuthService from '@/services/auth.service';
 import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext(null);
@@ -13,7 +13,6 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // This effect runs once on mount to check if a user is already logged in.
     const currentUser = AuthService.getCurrentUser();
     if (currentUser) {
       setUser(currentUser);
@@ -32,8 +31,8 @@ export const AuthProvider = ({ children }) => {
     return response;
   };
 
-  const register = async (username, email, password) => {
-    return await AuthService.register(username, email, password);
+  const register = async (username, email, password, role) => {
+    return await AuthService.register(username, email, password, role);
   };
 
   const logout = () => {
@@ -55,7 +54,6 @@ export const AuthProvider = ({ children }) => {
   return <AuthContext.Provider value={value}>{!isLoading && children}</AuthContext.Provider>;
 };
 
-// Custom hook to easily access auth context
 export const useAuth = () => {
   return useContext(AuthContext);
 };

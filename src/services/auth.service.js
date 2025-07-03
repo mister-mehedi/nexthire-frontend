@@ -6,8 +6,8 @@ const login = (username, password) => {
   return api.post("/auth/signin", { username, password });
 };
 
-const register = (username, email, password) => {
-  return api.post("/auth/signup", { username, email, password, role: ["candidate"] });
+const register = (username, email, password, role) => {
+  return api.post("/auth/signup", { username, email, password, role: [role] });
 };
 
 const logout = () => {
